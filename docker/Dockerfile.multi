@@ -1,0 +1,41 @@
+# Multi-Stage Dockerfile
+
+# ==========================================
+# STAGE 1: Builder Stage
+# Builds dependencies and virtual environment
+# ==========================================
+FROM python:3.11 AS builder
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+# Create virtualenv and install dependencies
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+RUN pip install --no-cache-dir -r requirements.txt
+
+# ==========================================
+# STAGE 2: Final Runtime Stage
+# Lightweight, copies only virtualenv & app source
+# ==========================================
+FROM python:3.11-slim AS runner
+
+WORKDIR /app
+
+# Copy built virtual environment from builder stage
+COPY --from=builder /opt/venv /opt/venv
+
+# Copy application code
+COPY app.py .
+
+# Use virtual environment binaries
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Best Practice: Run as non-root user
+RUN useradd -m appuser && chown -R appuser:appuser /app
+USER appuser
+
+EXPOSE 5000
+
+CMD ["python", "app.py"]
