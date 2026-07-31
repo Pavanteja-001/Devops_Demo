@@ -1,0 +1,2 @@
+Hello from Container!
+Added from Mac Host!
