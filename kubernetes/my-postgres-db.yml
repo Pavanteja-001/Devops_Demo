@@ -1,0 +1,9 @@
+apiVersion: database.devops.example.com/v1
+kind: PostgresDB
+metadata:
+  name: production-users-db
+spec:
+  dbName: "users_production"
+  engineVersion: "15"
+  storageSize: "20Gi"
+  replicas: 2
