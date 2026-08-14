@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  # Key-value pairs (for environment variables)
+  APP_MODE: "production"
+  APP_COLOR: "blue"
+  MAX_CONNECTIONS: "100"
+
+  # Multi-line file content (for mounted volume configuration files)
+  app.properties: |
+    # Application Configuration File
+    app.name=DevOpsPortal
+    app.version=2.5.0
+    features.beta=enabled
+    cache.ttl=3600

@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: configmap-demo-pod
+  labels:
+    app: configmap-demo
+spec:
+  containers:
+  - name: demo-app
+    image: alpine
+    command: ["sh", "-c", "echo 'Pod running with ConfigMap...'; sleep 3600"]
+
+    # -------------------------------------------------------------
+    # METHOD 1 & 2: INJECT CONFIGMAP AS ENVIRONMENT VARIABLES
+    # -------------------------------------------------------------
+    env:
+    - name: APP_COLOR
+      valueFrom:
+        configMapKeyRef:
+          name: app-config
+          key: APP_COLOR
+    - name: APP_MODE
+      valueFrom:
+        configMapKeyRef:
+          name: app-config
+          key: APP_MODE
+
+    # -------------------------------------------------------------
+    # METHOD 3: MOUNT CONFIGMAP AS A FILE INSIDE A FOLDER
+    # -------------------------------------------------------------
+    volumeMounts:
+    - name: config-volume
+      mountPath: /etc/app-config   # 👈 Files will appear inside /etc/app-config/
+
+  volumes:
+  - name: config-volume
+    configMap:
+      name: app-config             # 👈 Mounts all keys from app-config
