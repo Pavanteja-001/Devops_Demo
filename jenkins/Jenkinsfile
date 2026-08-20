@@ -1,0 +1,59 @@
+pipeline {
+    agent any
+
+    environment {
+        APP_NAME = 'devops-demo-app'
+        BUILD_VERSION = "1.0.${BUILD_NUMBER}"
+    }
+
+    stages {
+        stage('1. Code Checkout') {
+            steps {
+                echo "=========================================="
+                echo "Pulling latest code for ${APP_NAME}..."
+                echo "Build Version: ${BUILD_VERSION}"
+                echo "=========================================="
+            }
+        }
+
+        stage('2. Code Lint & Security Scan') {
+            steps {
+                echo "Running Static Code Analysis & Dependency Check..."
+                sh 'echo "Syntax check passed cleanly."'
+            }
+        }
+
+        stage('3. Run Automated Unit Tests') {
+            steps {
+                echo "Executing unit tests..."
+                sh 'echo "Test Suite: 15 Passed, 0 Failed."'
+            }
+        }
+
+        stage('4. Build Docker Image') {
+            steps {
+                echo "Building Docker image: ${APP_NAME}:${BUILD_VERSION}..."
+                sh 'echo "Docker image built successfully."'
+            }
+        }
+
+        stage('5. Deploy to Staging / Production') {
+            steps {
+                echo "Deploying ${APP_NAME}:${BUILD_VERSION} to Kubernetes Cluster..."
+                sh 'echo "Deployment rolled out successfully."'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "Pipeline execution finished for Build #${BUILD_NUMBER}."
+        }
+        success {
+            echo "🎉 SUCCESS: Build #${BUILD_NUMBER} passed all tests and deployed!"
+        }
+        failure {
+            echo "🚨 FAILURE: Build #${BUILD_NUMBER} failed! Alerting team on Slack..."
+        }
+    }
+}

@@ -1,0 +1,16 @@
+services:
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17
+    container_name: jenkins_master
+    restart: unless-stopped
+    privileged: true
+    user: root
+    ports:
+      - "8085:8080"   # 👈 Maps Mac port 8085 -> Jenkins internal container port 8080!
+      - "50000:50000" # Jenkins Agent Communication Port
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock # Allows Jenkins to run Docker commands!
+
+volumes:
+  jenkins_home:
